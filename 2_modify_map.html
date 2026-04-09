@@ -25,7 +25,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Most Basic Web Map</title>
+    <title>Web Map of Duluth</title>
     
     <!-- Leaflet CSS stylesheet -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
@@ -33,25 +33,56 @@
     <style>
 
         /* full page leaflet map */
+        body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #f0f4f8;
+}
+
+.header {
+    background-color: #003366;
+    color: white;
+    padding: 15px;
+    text-align: center;
+}
+
+.description {
+    padding: 10px 20px;
+    font-size: 16px;
+}
+
+#map {
+    height: 600px;   /* bigger map */
+    width: 90%;
+    margin: 20px auto;
+    border: 4px solid black;
+}
         
     </style>
 </head>
 <body>
     <!-- Header at the top of the page -->
     <div class="header">
-        <h1>A Mostly Basic Web Map</h1>
-        <h3>by: Your Name Here</h3>
+        <h1>A Web Map of Duluth</h1>
+        <h3>by: Conor Hurley</h3>
     </div>
-    <div id="map" style="width: 600px; height: 400px;"></div>
+    
+    <!--Added a description-->
+    <p class="description">
+    This map highlights some of my favorite places around Duluth, including scenic viewpoints,
+    outdoor recreation spots, and popular local attractions.
+    </p>
+    
+    <div id="map"></div>
     
     <!-- Leaflet JavaScript library -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     
     <script>
-        // Initialize the map, center it on UMD campus, and set the zoom level
-        const map = L.map('map').setView([46.82, -92.08], 13);
+        // Initialize the map, center it on UMD campus, and set the zoom level, moved this point to downtown duluth
+        const map = L.map('map').setView([46.7867, -92.1005], 12);
 
-        // Add Esri Satellite tiles
+        // Add Esri Satellite tiles, changed it to EsriWorldImagery
         const tiles = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
             attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
         });
@@ -64,8 +95,21 @@
 
 
         // Add a marker for the UMD campus
-        const marker = L.marker([46.82, -92.085]).addTo(map);
+        const marker = L.marker([46.82, -92.085],).addTo(map);
         marker.bindPopup("<b>University of Minnesota Duluth</b><br>A great place to learn about GIS!").openPopup();
+
+        // added a marker for canal park
+        const Marker = L.marker([46.779, -92.093]).addTo(map);
+        Marker.bindPopup("<b>Canal Park</b><br>Famous for the Aerial Lift Bridge!");
+
+
+        // Added a marker for Enger Tower
+        const EngerMarker = L.marker([46.805, -92.115]).addTo(map);
+
+         EngerMarker.bindPopup(`
+         <b>Enger Tower</b><br>
+         A historic stone tower with amazing panoramic views of Duluth and Lake Superior!<br><br>
+        <img src="https://upload.wikimedia.org/wikipedia/commons/3/3c/Enger_Tower.jpg" width="200">`);
     </script>
 </body>
 </html>
