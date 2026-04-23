@@ -51,28 +51,104 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Most Basic Web Map</title>
+    <h1>Duluth School Attendance Areas</h1>
+<h3>By Conor Hurley</h3>
+<p>This map shows school attendance boundaries and assigned schools in Duluth.</p>
     
     <!-- Leaflet CSS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
     
-    <style></style>
+    <style>
+    /* Center everything and improve font */
+       /* This styles the overall page layout and gives it a clean appearance */
+  body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    background-color: #f5f5f5;
+  }
+
+    /* Style the map */
+       /* This controls the size and placement of the map on the page */
+    #map {
+      width: 80%;
+      height: 500px;
+      margin: auto;
+      border: 2px solid #ccc;
+  }
+
+/* Title styling */
+h1 {
+    margin-top: 20px;
+}
+
+h3 {
+    margin-bottom: 5px;
+    color: #555;
+}
+    </style>
 </head>
 <body>
     <div id="map" style="width: 600px; height: 400px;"></div>
     
     <!-- Leaflet JavaScript -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    
+   
     <script>
         // Initialize the map, center it on UMD campus, and set the zoom level
         const map = L.map('map').setView([46.82, -92.08], 13);
+        // Initialize the map centered on Duluth
 
-        // Add OpenStreetMap tiles
-        const tiles = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            maxZoom: 19,
-            attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-        }).addTo(map);
+        // Add a simple basemap
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+        attribution: '&copy; OpenStreetMap &copy; CARTO | Data: Minnesota Department of Education (via MnGeoCommons)'
+      }).addTo(map);
+
+// Fetch the GeoJSON file
+        // This loads the attendance area data asynchronously from a local file
+        // The data is converted from JSON format into a JavaScript object
+fetch('duluth_school_attendance_areas.json')
+  .then(response => response.json())
+  .then(data => {
+
+    // Function to style each polygon
+        // This assigns a random fill color and consistent outline style to each attendance area
+    function style(feature) {
+        return {
+            fillColor: getRandomColor(),
+            weight: 2,
+            color: 'white',
+            fillOpacity: 0.7
+        };
+    }
+
+    // This function runs automatically for each polygon in the GeoJSON
+       // It binds a popup to each feature displaying the associated schools
+function onEachFeature(feature, layer) {
+    if (feature.properties) {
+        layer.bindPopup(`
+            <p><b>Elementary:</b> ${feature.properties.ELEM_NAME}</p>
+            <p><b>Middle:</b> ${feature.properties.MIDD_NAME}</p>
+            <p><b>High:</b> ${feature.properties.HIGH_NAME}</p>
+        `);
+    }
+}
+
+
+    // Add GeoJSON layer to the map
+    const geojsonLayer = L.geoJSON(data, {
+        style: style,
+        onEachFeature: onEachFeature
+    }).addTo(map);
+
+    // Zoom map to fit GeoJSON
+    map.fitBounds(geojsonLayer.getBounds());
+  });
+
+// Random color generator
+function getRandomColor() {
+    return '#' + Math.floor(Math.random()*16777215).toString(16);
+}
     </script>
 </body>
 </html>
